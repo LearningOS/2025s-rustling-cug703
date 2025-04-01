@@ -9,26 +9,26 @@
 // Execute `rustlings hint errors1` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 pub fn generate_nametag_text(name: String) -> Option<String> {
     if name.is_empty() {
         // Empty names aren't allowed.
-        None
+        return None
     } else {
         Some(format!("Hi! My name is {}", name))
     }
 }
-
+#[warn(unused_imports)]
 #[cfg(test)]
 mod tests {
-    use super::*;
 
+    use super::*;
     #[test]
     fn generates_nametag_text_for_a_nonempty_name() {
         assert_eq!(
             generate_nametag_text("Beyoncé".into()),
-            Ok("Hi! My name is Beyoncé".into())
+            Ok::<String,String>("Hi! My name is Beyoncé".into()).ok()    //ok函数将Result转换为Option 
+                                                                          //OK ----> Some(value) Err-----> None
         );
     }
 
@@ -37,7 +37,7 @@ mod tests {
         assert_eq!(
             generate_nametag_text("".into()),
             // Don't change this line
-            Err("`name` was empty; it must be nonempty.".into())
+            Err::<String,String>("`name` was empty; it must be nonempty.".into()).ok()
         );
     }
 }

@@ -2,7 +2,7 @@
 	graph
 	This problem requires you to implement a basic graph functio
 */
-// I AM NOT DONE
+
 
 use std::collections::{HashMap, HashSet};
 use std::fmt;
@@ -28,21 +28,45 @@ impl Graph for UndirectedGraph {
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>> {
         &self.adjacency_table
     }
-    fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
+    fn add_node(&mut self, node: &str) -> bool {
+        if !self.contains(node){
+            self.adjacency_table_mutable().insert(String::from(node),Vec::new());
+            true
+        }
+        else{
+            return false;
+        }
+
     }
+    fn add_edge(&mut self, edge: (&str, &str, i32)) {
+        let from = String::from(edge.0);
+        let to = String::from(edge.1);
+        let weight = edge.2;
+
+        // 确保两个节点都存在
+        self.add_node(&from);
+        self.add_node(&to);
+
+        // 添加边 (from -> to)
+        self.adjacency_table_mutable()
+            .entry(from.clone())
+            .or_insert_with(Vec::new)
+            .push((to.clone(), weight));
+
+        // 添加反向边 (to -> from)
+        self.adjacency_table_mutable()
+            .entry(to)
+            .or_insert_with(Vec::new)
+            .push((from, weight));
+    }
+        
 }
-pub trait Graph {
+pub trait Graph {        //提供接口
     fn new() -> Self;
     fn adjacency_table_mutable(&mut self) -> &mut HashMap<String, Vec<(String, i32)>>;
     fn adjacency_table(&self) -> &HashMap<String, Vec<(String, i32)>>;
-    fn add_node(&mut self, node: &str) -> bool {
-        //TODO
-		true
-    }
-    fn add_edge(&mut self, edge: (&str, &str, i32)) {
-        //TODO
-    }
+    fn add_node(&mut self, node: &str) -> bool {true}
+    fn add_edge(&mut self, edge: (&str, &str, i32)) {}
     fn contains(&self, node: &str) -> bool {
         self.adjacency_table().get(node).is_some()
     }
@@ -78,7 +102,7 @@ mod test_undirected_graph {
             (&String::from("c"), &String::from("b"), 10),
         ];
         for edge in expected_edges.iter() {
-            assert_eq!(graph.edges().contains(edge), true);
+            assert_eq!(graph.edges().contains(&edge), true);
         }
     }
 }

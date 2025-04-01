@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -41,7 +40,7 @@ where
 
 impl<T> BinarySearchTree<T>
 where
-    T: Ord,
+    T: Ord
 {
 
     fn new() -> Self {
@@ -50,13 +49,68 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        match self.root{
+            None=>{self.root=Some(Box::new(TreeNode::new(value)))}
+            ref mut n=>{
+                Self::bst_helper(n,value)
+            }
+        }
+        
+       
+    }
+    fn bst_helper(node:&mut Option<Box<TreeNode<T>>>,value:T){
+        match node{
+            Some(ref mut n)=>{
+                if n.value>value{
+                    Self::bst_helper(&mut n.left,value)
+
+                }
+                else if n.value <value{
+                    Self::bst_helper( &mut n.right,value)
+                }
+                else{
+                    return;
+                }
+
+            }
+            None=>{
+                *node=Some(Box::new(TreeNode::new(value)))
+
+            }
+        }
     }
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        match self.root{
+            None=>{
+                return false;
+            }
+            ref n =>{
+                return Self::search_helper(n,value)
+            }
+        }
+        
+        
+    }
+    pub fn search_helper(node:&Option<Box<TreeNode<T>>>,value:T)->bool{
+        match node{
+            None=>{
+                return false;
+            }
+            Some(ref n)=>{
+                if n.value>value{
+                    return Self::search_helper(&(n.left),value);
+                }
+                else if n.value<value{
+                    return  Self::search_helper(&(n.right),value);
+                }
+                else {
+                    return true;
+                }
+
+            }
+        }
     }
 }
 

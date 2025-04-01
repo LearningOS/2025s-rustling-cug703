@@ -2,7 +2,7 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
+
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -69,14 +69,71 @@ impl<T> LinkedList<T> {
             },
         }
     }
-	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
+	pub fn merge( list_a: LinkedList<T>, list_b: LinkedList<T>) -> Self
+    where T:PartialOrd+Copy
 	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+        let mut result = LinkedList::new();
+
+        // 处理空链表情况
+        if list_a.length == 0 && list_b.length == 0 {
+            return result;
         }
+        if list_a.length == 0 {
+            return list_b;
+        }
+        if list_b.length == 0 {
+            return list_a;
+        }
+
+        // 初始化两个链表的当前节点
+        let mut current_a = list_a.start;
+        let mut current_b = list_b.start;
+
+        // 合并过程
+        while let (Some(node_a), Some(node_b)) = (current_a, current_b) {
+            let val_a = unsafe { &(*node_a.as_ptr()).val };
+            let val_b = unsafe { &(*node_b.as_ptr()).val };
+
+            if val_a <= val_b {
+                result.add(*val_a);
+                current_a = unsafe { (*node_a.as_ptr()).next };
+            } else {
+                result.add(*val_b);
+                current_b = unsafe { (*node_b.as_ptr()).next };
+            }
+        }
+
+        // 处理剩余的节点
+        while let Some(node_a) = current_a {
+            let val_a = unsafe { &(*node_a.as_ptr()).val };
+            result.add(*val_a);
+            current_a = unsafe { (*node_a.as_ptr()).next };
+        }
+        while let Some(node_b) = current_b {
+            let val_b = unsafe { &(*node_b.as_ptr()).val };
+            result.add(*val_b);
+            current_b = unsafe { (*node_b.as_ptr()).next };
+        }
+
+        result
+
+      
+
+        
+        
+
+
+        
+       
+      
+
+         
+
+
+
+
+
+
 	}
 }
 
